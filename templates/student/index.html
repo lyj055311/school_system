@@ -1,0 +1,84 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+        <meta name="description" content="" />
+        <meta name="author" content="" />
+        <title>苏溪镇中学习网站学生端</title>
+
+        <link rel="stylesheet" href={% static 'plugins\bootstrap-3.4.1\css\bootstrap.min.css' %}>
+        <!-- Favicon-->
+        <link rel="icon" type="image/x-icon" href={% static 'img\favicon.ico' %} />
+        <!-- Core theme CSS (includes Bootstrap)-->
+        <link href={% static 'css\main_styles.css' %} rel="stylesheet" />
+        <link rel="stylesheet" href={% static 'plugins\font-awesome-4.7.0\css\font-awesome.min.css' %}>
+        {% block css %}{% endblock css %}
+    </head>
+    <body>
+        <div class="d-flex" id="wrapper">
+            <!-- Sidebar-->
+            <div class="border-end bg-white" id="sidebar-wrapper">
+                <div class="sidebar-heading border-bottom bg-light">Tasks & notes</div>
+                <div class="list-group list-group-flush">
+                    <a class="list-group-item list-group-item-action list-group-item-light p-3" href="/student/article/add">写笔记</a>
+                    <a class="list-group-item list-group-item-action list-group-item-light p-3" href="/student/article/list">笔记列表</a>
+                    <a class="list-group-item list-group-item-action list-group-item-light p-3" href="#"></a>
+                    <a class="list-group-item list-group-item-action list-group-item-light p-3" href=""></a>
+                    <a class="list-group-item list-group-item-action list-group-item-light p-3" href="#"></a>
+                    <a class="list-group-item list-group-item-action list-group-item-light p-3" href="#"></a>
+                </div>
+            </div>
+            <!-- Page content wrapper-->
+            <div id="page-content-wrapper">
+                <!-- Top navigation-->
+                <nav class="navbar navbar-expand-lg navbar-light bg-light border-bottom">
+                    <div class="container-fluid">
+                        <button class="btn btn-primary" id="sidebarToggle">切换菜单</button>
+                        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation"><span class="navbar-toggler-icon"></span></button>
+                        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                            <ul class="navbar-nav ms-auto mt-2 mt-lg-0">
+                                <li class="nav-item active"><a class="nav-link" href="/student/index">主页</a></li>
+                                <li class="nav-item"><a class="nav-link" href="#!"></a></li>
+                                <li class="nav-item dropdown">
+                                    <a class="nav-link dropdown-toggle" id="navbarDropdown" href="#" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">{{request.session.info.name}}</a>
+                                    <div class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
+                                        <a class="dropdown-item" href="#!">Action1</a>
+                                        <a class="dropdown-item" href="#!">Action2</a>
+                                        <div class="dropdown-divider"></div>
+                                        <a class="dropdown-item" href="/student/logout">注销</a>
+                                    </div>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </nav>
+                <!-- Page content-->
+                <div class="container-fluid">
+                    {% block content %}
+                    <div>
+                        <div style="background-image: url({% static 'img\indexbg2.jpg' %});height: 500px;">
+                        <h2>{{request.session.info.name}}同学 欢迎使用！</h2>
+                        <br>
+                        <p>本系统旨在解决教育教学中遇到的各种难题。</p>
+                        <p>个人开发，有问题可联系作者。</p>
+                        <p>联系方式：刘一骏（13516957004，647004）</p>
+
+                        </div>
+                    </div>
+                    {% endblock content %}
+                </div>
+            </div>
+        </div>
+
+        <script src={% static 'js\jquery-3.6.0.min.js' %}></script>
+        <script src={% static 'plugins\bootstrap-3.4.1\js\bootstrap.min.js' %}></script>
+
+        <!-- Bootstrap core JS-->
+        <script src={% static 'js\bootstrap.bundle.min.js' %}></script>
+        <!-- Core theme JS-->
+        <script src={% static 'js\main_scripts.js' %}></script>
+        {% block js %}{% endblock js %}
+    </body>
+</html>

@@ -1,0 +1,121 @@
+{% extends "teacher/index.html" %}
+{% load static %}
+{% block content %}
+<div class="container" style="margin-bottom:30px ;">
+    <div class="panel panel-primary">
+        <div class="panel-heading">
+            <h3 class="panel-title">导入数据</h3>
+        </div>
+        <div class="panel-body">
+            <form method="post" id="'updloadForm" enctype="multipart/form-data">
+
+                <div class="row">
+                    <div class="col-xl-2" style="text-align:center ;">
+                        <a href="/media/school/student.xlsx" class="btn btn-primary">下载模板</a>
+                    </div>
+                    <div class="col-xl-2" style="text-align:center ;">
+                        <a href="/teacher/s_clear" class="btn btn-primary">清空数据</a>
+                    </div>
+                    <div class="col-xl-5">
+                        <input type="file" name='exc' class="form-control">
+                    </div>
+                    <div class="col-xl-3" style="text-align:center ;">
+                        <input type="button" value="批量上传" class="btn btn-primary" id="btnUpload">
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+
+<div class="container">
+    <div class="panel panel-primary">
+        <div class="panel-heading">
+            <h3 class="panel-title">学生列表：（{{count}}条数据）</h3>
+        
+        </div>
+        <div class="panel-body">
+            <div style="float: right;width: 300px;">
+                <form method="get">
+                    <div class="input-group">
+
+                        <input type="text" name='q' class="form-control" placeholder="Search for..." value={{value}}>
+
+                        <button class="btn btn-default" type="submit">搜索</button>
+                    </div><!-- /input-group -->
+                </form>
+            </div>
+            <table class="table">
+
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>班级</th>
+                        <th>姓名</th>
+                        <th>性别</th>
+                        <th>学籍/身份证</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for obj in page_queryset %}
+                    <tr>
+                        <th>{{forloop.counter}}</th>
+                        <td>{{obj.class_room}}</td>
+                        <td>{{obj.name}}</td>
+                        <td>{{obj.get_gender_display}}</td>
+                        <td>{{obj.identitycard}}</td>
+
+                    </tr>
+                    {% endfor %}
+
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+<div class='container'>
+
+    <ul class="pagination">
+
+        {{page_string}}
+        
+    </ul>
+
+</div>
+{% endblock content %}
+
+{% block js %}
+<script type="text/javascript">
+    $(function () {
+        bindbtnUploadEvent();
+    });
+
+    function bindbtnUploadEvent() {
+        $("#btnUpload").click(function () {
+            var formdata = new FormData();
+            var file = $('input[type=file]').get(0).files[0];
+            formdata.append('file_obj', file);
+            console.log(formdata)
+            $.ajax({
+                url: "/teacher/s_batch",
+                type: "post",
+                data: formdata,
+                dataType: "JSON",
+                contentType: false,
+                processData: false,
+                success: function (res) {
+                    if (res.status) {
+                        alert('导入成功');
+                        location.reload();
+                    } else {
+                        alert('导入失败，请检查文件');
+                    }
+                },
+            });
+        }
+        );
+    };
+
+</script>
+{% endblock js %}

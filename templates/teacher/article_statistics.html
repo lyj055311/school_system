@@ -1,0 +1,232 @@
+{% extends "teacher/index.html" %} {% load static %} {% block content %}
+<div class="container-fluid">
+  <div class="row">
+    <div class="col-xl-4">
+      <div class="panel panel-success">
+        <div class="panel-heading">
+          <h3 class="panel-title">按班级搜索</h3>
+        </div>
+        <div class="panel-body">
+          <form method="get" >
+            <div class="input-group">
+              <select class="form-control" name="class_room">
+                {% for filed in class_queryset %}
+                <option value="{{filed.class_room}}">
+                  {{filed.class_room}}
+                </option>
+                {% endfor %}
+              </select>
+
+              <button class="btn btn-success" type="submit">搜索</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-xl-8">
+
+      <div class="panel panel-success">
+        <div class="panel-heading">
+          <h3 class="panel-title">自定义搜索</h3>
+        </div>
+        <div class="panel-body">
+
+          <form method="get">
+            <div class="input-group">
+              <input type="text" name="q" class="form-control" placeholder="Search for..." value="{{value}}" />
+              <button class="btn btn-success" type="submit">搜索</button>
+
+            </div>
+            <!-- /input-group -->
+          </form>
+
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<div class="container-fluid">
+  <div class="panel panel-success">
+    <div class="panel-heading">
+      <h3 class="panel-title"></h3>
+    </div>
+    <div class="panel-body">
+      <table class="table table-bordered">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>班级</th>
+            <th>标题</th>
+            <th>作者</th>
+            <th>更新时间</th>
+            <th>操作</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for obj in article_page_queryset %}
+          <tr>
+            <th>{{forloop.counter}}</th>
+            <td>{{obj.author.class_room}}</td>
+            <td>{{obj.title}}</td>
+            <td>{{obj.author}}</td>
+            <td>{{obj.create_time}}</td>
+            <td>
+              <a href="/teacher/s_article/{{obj.id}}/view" class="btn btn-primary btn-xs">查看</a>
+              <a href="/teacher/s_article/{{obj.id}}/delete" class="btn btn-danger btn-xs">删除</a>
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+      <div class="container">
+        <ul class="pagination">
+          {{article_page_string}}
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<div class="panel panel-success">
+<div class="panel-heading">
+  <h3 class='panel-title'>可视化数据</h3>
+</div>
+<div class="panel-body">
+  <div class="row" style="height: 900px;">
+  <div id='article_class' class="col-xl-6"></div>
+  <div id='article_student' class="col-xl-6"></div>
+</div>
+
+</div>
+</div>
+
+
+
+{% endblock content %}
+
+{% block js %}
+<script src={% static 'js\echarts.js' %}></script>
+<script>
+  let CLASSROOM;
+  $(function () {
+    chartEvent1();
+    chartEvent2();
+  });
+
+  function chartEvent1() {
+    let myChart = echarts.init(document.getElementById('article_class'));
+    let option = {
+      title: {
+        text: '班级笔记统计'
+      },
+      tooltip: {
+        trigger: 'axis',
+        axisPointer: {
+          type: 'shadow'
+        }
+      },
+      legend: {},
+      grid: {
+        left: '3%',
+        right: '4%',
+        bottom: '3%',
+        containLabel: true
+      },
+      xAxis: {
+        type: 'value',
+        boundaryGap: [0, 0.01]
+      },
+      yAxis: {
+        type: 'category',
+        data: ['Brazil', 'Indonesia', 'USA', 'India', 'China', 'World']
+      },
+      series: [
+
+        {
+          name: '文章数量',
+          type: 'bar',
+          data: [18203, 23489, 29034, 104970, 131744, 630230]
+        }
+      ]
+    };
+    
+    $.ajax({
+      url: "/teacher/article/chart",
+      type: "get",
+      dataType: "JSON",
+      success: function (res) {
+        if (res.status) {
+          option.series[0].data = res.xdata;
+          option.yAxis.data = res.ydata;
+          myChart.setOption(option);
+        }
+      },
+
+    });
+
+  };
+
+
+  function chartEvent2() {
+    let myChart = echarts.init(document.getElementById('article_student'));
+    let option = {
+      title: {
+        text: '学生笔记统计'
+      },
+      tooltip: {
+        trigger: 'axis',
+        axisPointer: {
+          type: 'shadow'
+        }
+      },
+      legend: {},
+      grid: {
+        left: '3%',
+        right: '4%',
+        bottom: '3%',
+        containLabel: true
+      },
+      xAxis: {
+        type: 'value',
+        boundaryGap: [0, 0.01]
+      },
+      yAxis: {
+        type: 'category',
+        data: []
+      },
+      series: [
+
+        {
+          name: '文章数量',
+          type: 'bar',
+          data: []
+        }
+      ]
+    };
+    $("select").change(function () {
+      
+       $.ajax({
+        url: "/teacher/article/chart2",
+        type: "get",
+        data: {"class_room":$(this).val()},
+        dataType: "JSON",
+        success: function (res) {
+          if (res.status) {
+            option.series[0].data = res.xdata;
+            option.yAxis.data = res.ydata;
+            myChart.setOption(option);
+          }
+        },
+
+      });
+    });
+   
+
+  };
+
+</script>
+{% endblock js %}
